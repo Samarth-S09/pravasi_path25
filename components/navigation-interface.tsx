@@ -668,289 +668,27 @@ const StationNavigation: React.FC<StationNavigationProps> = ({ initialData, sele
       }
     });
 
-    // Draw all nodes as square buttons
+    // Draw all nodes as SVG icons
     Object.entries(activeCoordinates).forEach(([node, [x, y]]) => {
-      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       const [scaledX, scaledY] = scaleCoordinates(x, y, svgSize);
-      rect.setAttribute('x', (scaledX - 14).toString()); // Center the 26px square
-      rect.setAttribute('y', (scaledY - 14).toString()); // Center the 26px square
-      rect.setAttribute('width', '28');
-      rect.setAttribute('height', '28');
-      rect.setAttribute('fill', 'transparent');
-      rect.setAttribute('stroke', '#00ff00');
-      rect.setAttribute('stroke-width', '2');
-      rect.setAttribute('data-node', node);
 
+      const image = document.createElementNS("http://www.w3.org/2000/svg", "image");
+      image.setAttributeNS(null, "href", `/icons/${node}.svg`); // SVG icon path
+      image.setAttributeNS(null, "x", (scaledX - 12).toString());
+      image.setAttributeNS(null, "y", (scaledY - 12).toString());
+      image.setAttributeNS(null, "width", "24");
+      image.setAttributeNS(null, "height", "24");
+      image.setAttributeNS(null, "data-node", node);
+
+      // Add glow to kiosk and e52
       if (node === "kiosk") {
-        rect.setAttribute('fill', '#00ff00');
-        rect.setAttribute('filter', 'url(#glow)');
-        rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-        rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-        rect.setAttribute('width', '18');
-        rect.setAttribute('height', '18');
+        image.setAttributeNS(null, "x", (scaledX - 25).toString());
+        image.setAttributeNS(null, "y", (scaledY - 1).toString());
+        image.setAttributeNS(null, "width", "50");
+        image.setAttributeNS(null, "height", "50");
       }
 
-      if (node === "e52") {
-        rect.setAttribute('fill', '#00ff00');
-        rect.setAttribute('filter', 'url(#glow)');
-        rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-        rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-        rect.setAttribute('width', '18');
-        rect.setAttribute('height', '18');
-        rect.setAttribute('fill', 'transparent');
-        rect.setAttribute('stroke', 'transparent');
-        rect.setAttribute('stroke-width', '2');
-        pathGroup.appendChild(rect);  
-      }
-
-      if (node === "mb2") {
-        rect.setAttribute('fill', '#00ff00');
-        rect.setAttribute('filter', 'url(#glow)');
-        rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-        rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-        rect.setAttribute('width', '18');
-        rect.setAttribute('height', '18');
-        rect.setAttribute('fill', 'transparent');
-        rect.setAttribute('stroke', 'transparent');
-        rect.setAttribute('stroke-width', '2');
-        pathGroup.appendChild(rect);  
-      }
-
-      if (node === "mb4") {
-        rect.setAttribute('fill', '#00ff00');
-        rect.setAttribute('filter', 'url(#glow)');
-        rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-        rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-        rect.setAttribute('width', '18');
-        rect.setAttribute('height', '18');
-        rect.setAttribute('fill', 'transparent');
-        rect.setAttribute('stroke', 'transparent');
-        rect.setAttribute('stroke-width', '2');
-        pathGroup.appendChild(rect);  
-      }
-
-      if (node === "lb2") {
-        rect.setAttribute('fill', '#00ff00');
-        rect.setAttribute('filter', 'url(#glow)');
-        rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-        rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-        rect.setAttribute('width', '18');
-        rect.setAttribute('height', '18');
-        rect.setAttribute('fill', 'transparent');
-        rect.setAttribute('stroke', 'transparent');
-        rect.setAttribute('stroke-width', '2');
-        pathGroup.appendChild(rect);  
-      }
-
-      if (node === "e51") {
-        rect.setAttribute('fill', '#00ff00');
-        rect.setAttribute('filter', 'url(#glow)');
-        rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-        rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-        rect.setAttribute('width', '18');
-        rect.setAttribute('height', '18');
-        rect.setAttribute('fill', 'transparent');
-        rect.setAttribute('stroke', 'transparent');
-        rect.setAttribute('stroke-width', '2');
-        pathGroup.appendChild(rect);  
-      }
-
-      if (node === "e11") {
-        rect.setAttribute('fill', '#00ff00');
-        rect.setAttribute('filter', 'url(#glow)');
-        rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-        rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-        rect.setAttribute('width', '18');
-        rect.setAttribute('height', '18');
-        rect.setAttribute('fill', 'transparent');
-        rect.setAttribute('stroke', 'transparent');
-        rect.setAttribute('stroke-width', '2');
-        pathGroup.appendChild(rect);  
-      }
-
-      if (node === "e12") {
-        rect.setAttribute('fill', '#00ff00');
-        rect.setAttribute('filter', 'url(#glow)');
-        rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-        rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-        rect.setAttribute('width', '18');
-        rect.setAttribute('height', '18');
-        rect.setAttribute('fill', 'transparent');
-        rect.setAttribute('stroke', 'transparent');
-        rect.setAttribute('stroke-width', '2');
-        pathGroup.appendChild(rect);  
-      }
-
-      if (node === "ub1") {
-        rect.setAttribute('fill', '#00ff00');
-        rect.setAttribute('filter', 'url(#glow)');
-        rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-        rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-        rect.setAttribute('width', '18');
-        rect.setAttribute('height', '18');
-        rect.setAttribute('fill', 'transparent');
-        rect.setAttribute('stroke', 'transparent');
-        rect.setAttribute('stroke-width', '2');
-        pathGroup.appendChild(rect);  
-      }
-
-      if (node === "ub2") {
-        rect.setAttribute('fill', '#00ff00');
-        rect.setAttribute('filter', 'url(#glow)');
-        rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-        rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-        rect.setAttribute('width', '18');
-        rect.setAttribute('height', '18');
-        rect.setAttribute('fill', 'transparent');
-        rect.setAttribute('stroke', 'transparent');
-        rect.setAttribute('stroke-width', '2');
-        pathGroup.appendChild(rect);  
-      }
-
-      if (node === "ub3") {
-        rect.setAttribute('fill', '#00ff00');
-        rect.setAttribute('filter', 'url(#glow)');
-        rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-        rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-        rect.setAttribute('width', '18');
-        rect.setAttribute('height', '18');
-        rect.setAttribute('fill', 'transparent');
-        rect.setAttribute('stroke', 'transparent');
-        rect.setAttribute('stroke-width', '2');
-        pathGroup.appendChild(rect);  
-      }
-
-      if (node === "ub4") {
-        rect.setAttribute('fill', '#00ff00');
-        rect.setAttribute('filter', 'url(#glow)');
-        rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-        rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-        rect.setAttribute('width', '18');
-        rect.setAttribute('height', '18');
-        rect.setAttribute('fill', 'transparent');
-        rect.setAttribute('stroke', 'transparent');
-        rect.setAttribute('stroke-width', '2');
-        pathGroup.appendChild(rect);  
-      }
-
-      if (node === "e61") {
-        rect.setAttribute('fill', '#00ff00');
-        rect.setAttribute('filter', 'url(#glow)');
-        rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-        rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-        rect.setAttribute('width', '18');
-        rect.setAttribute('height', '18');
-        rect.setAttribute('fill', 'transparent');
-        rect.setAttribute('stroke', 'transparent');
-        rect.setAttribute('stroke-width', '2');
-        pathGroup.appendChild(rect);  
-      }
-
-      if (node === "e62") {
-        rect.setAttribute('fill', '#00ff00');
-        rect.setAttribute('filter', 'url(#glow)');
-        rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-        rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-        rect.setAttribute('width', '18');
-        rect.setAttribute('height', '18');
-        rect.setAttribute('fill', 'transparent');
-        rect.setAttribute('stroke', 'transparent');
-        rect.setAttribute('stroke-width', '2');
-        pathGroup.appendChild(rect);  
-      }
-
-      if (node === "e2") {
-        rect.setAttribute('fill', '#00ff00');
-        rect.setAttribute('filter', 'url(#glow)');
-        rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-        rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-        rect.setAttribute('width', '18');
-        rect.setAttribute('height', '18');
-        rect.setAttribute('fill', 'transparent');
-        rect.setAttribute('stroke', 'transparent');
-        rect.setAttribute('stroke-width', '2');
-        pathGroup.appendChild(rect);  
-      }
-
-      if (node === "e3") {
-        rect.setAttribute('fill', '#00ff00');
-        rect.setAttribute('filter', 'url(#glow)');
-        rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-        rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-        rect.setAttribute('width', '18');
-        rect.setAttribute('height', '18');
-        rect.setAttribute('fill', 'transparent');
-        rect.setAttribute('stroke', 'transparent');
-        rect.setAttribute('stroke-width', '2');
-        pathGroup.appendChild(rect);  
-      }
-
-      if (node === "e41") {
-        rect.setAttribute('fill', '#00ff00');
-        rect.setAttribute('filter', 'url(#glow)');
-        rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-        rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-        rect.setAttribute('width', '18');
-        rect.setAttribute('height', '18');
-        rect.setAttribute('fill', 'transparent');
-        rect.setAttribute('stroke', 'transparent');
-        rect.setAttribute('stroke-width', '2');
-        pathGroup.appendChild(rect);  
-      }
-
-      if (node === "ub0") {
-        rect.setAttribute('fill', '#00ff00');
-        rect.setAttribute('filter', 'url(#glow)');
-        rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-        rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-        rect.setAttribute('width', '18');
-        rect.setAttribute('height', '18');
-        rect.setAttribute('fill', 'transparent');
-        rect.setAttribute('stroke', 'transparent');
-        rect.setAttribute('stroke-width', '2');
-        pathGroup.appendChild(rect);  
-      }
-
-      if (node === "lb4") {
-        rect.setAttribute('fill', '#00ff00');
-        rect.setAttribute('filter', 'url(#glow)');
-        rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-        rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-        rect.setAttribute('width', '18');
-        rect.setAttribute('height', '18');
-        rect.setAttribute('fill', 'transparent');
-        rect.setAttribute('stroke', 'transparent');
-        rect.setAttribute('stroke-width', '2');
-        pathGroup.appendChild(rect);  
-      }
-
-      if (node === "e42") {
-        rect.setAttribute('fill', '#00ff00');
-        rect.setAttribute('filter', 'url(#glow)');
-        rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-        rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-        rect.setAttribute('width', '18');
-        rect.setAttribute('height', '18');
-        rect.setAttribute('fill', 'transparent');
-        rect.setAttribute('stroke', 'transparent');
-        rect.setAttribute('stroke-width', '2');
-        pathGroup.appendChild(rect);  
-      }
-
-      if (node === "lb1") {
-        rect.setAttribute('fill', '#00ff00');
-        rect.setAttribute('filter', 'url(#glow)');
-        rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-        rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-        rect.setAttribute('width', '18');
-        rect.setAttribute('height', '18');
-        rect.setAttribute('fill', 'transparent');
-        rect.setAttribute('stroke', 'transparent');
-        rect.setAttribute('stroke-width', '2');
-        pathGroup.appendChild(rect);  
-      }
-
-      nodesGroup.appendChild(rect);
+      nodesGroup.appendChild(image);
     });
 
     // Draw the shortest path in red
@@ -990,32 +728,6 @@ const StationNavigation: React.FC<StationNavigationProps> = ({ initialData, sele
           rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
           rect.setAttribute('width', '18');
           rect.setAttribute('height', '18');
-        }
-
-        if (node === "e52") {
-          rect.setAttribute('fill', '#00ff00');
-          rect.setAttribute('filter', 'url(#glow)');
-          rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-          rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-          rect.setAttribute('width', '18');
-          rect.setAttribute('height', '18');
-          rect.setAttribute('fill', 'transparent');
-          rect.setAttribute('stroke', 'transparent');
-          rect.setAttribute('stroke-width', '2');
-          pathGroup.appendChild(rect);  
-        }
-
-        if (node === "e51") {
-          rect.setAttribute('fill', '#00ff00');
-          rect.setAttribute('filter', 'url(#glow)');
-          rect.setAttribute('x', (scaledX - 9).toString()); // Center the 26px square
-          rect.setAttribute('y', (scaledY - 9).toString()); // Center the 26px square
-          rect.setAttribute('width', '18');
-          rect.setAttribute('height', '18');
-          rect.setAttribute('fill', 'transparent');
-          rect.setAttribute('stroke', 'transparent');
-          rect.setAttribute('stroke-width', '2');
-          pathGroup.appendChild(rect);  
         }
 
         if (node === "e11") {
@@ -1857,8 +1569,8 @@ const StationNavigation: React.FC<StationNavigationProps> = ({ initialData, sele
                 preserveAspectRatio="xMidYMid slice"
               />
               <g id="edges"></g>
-              <g id="nodes"></g>
               <g id="path"></g>
+              <g id="nodes"></g>
             </svg>
           </div>
         </div>

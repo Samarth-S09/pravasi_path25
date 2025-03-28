@@ -120,7 +120,7 @@ const stationGraph: Record<string, Record<string, number>> = {
   "up1":{"esc2":1,"e3":1},
   "e3":{"up1":1,"lp1":1,"e2":1,"mb2":2},
   "lp1":{"e3":1,"esc3":1},
-  "esc3":{"lp1":1,"lb1":1},
+  "esc3":{"lp1":1,"lb1":1, "kiosk":1},
   "lb1":{"esc3":1,"lb2":2},
   "ub2":{"ub1":2, "e41":1, "ub4":2},
   "e41":{"ub2":1,"up2":1,"up3":1, "elv":1},
@@ -262,16 +262,31 @@ function findShortestPath(start: string, end: string): string[] {
 }
 
 const menuItems = [
+  // Platforms
   { icon: "platform1", label: { english: "Platform 1", hindi: "प्लेटफ़ॉर्म 1", marathi: "प्लॅटफॉर्म 1", gujarati: "પ્લેટફોર્મ 1" }, value: "lp1" },
   { icon: "platform2", label: { english: "Platform 2", hindi: "प्लेटफ़ॉर्म 2", marathi: "प्लॅटफॉर्म 2", gujarati: "પ્લેટફોર્મ 2" }, value: "lp2" },
   { icon: "platform3", label: { english: "Platform 3", hindi: "प्लेटफ़ॉर्म 3", marathi: "प्लॅटफॉर्म 3", gujarati: "પ્લેટફોર્મ 3" }, value: "lp3" },
   { icon: "platform4", label: { english: "Platform 4", hindi: "प्लेटफ़ॉर्म 4", marathi: "प्लॅटफॉर्म 4", gujarati: "પ્લેટફોર્મ 4" }, value: "lp4" },
-  { icon: "ticket_counter", label: { english: "Ticket Counter 1", hindi: "टिकट काउंटर 1", marathi: "तिकीट काउंटर 1", gujarati: "ટિકિટ કાઉન્ટર 1" }, value: "tc1" },
-  { icon: "ticket_counter", label: { english: "Ticket Counter 2", hindi: "टिकट काउंटर 2", marathi: "तिकीट काउंटर 2", gujarati: "ટિકિટ કાઉન્ટર 2" }, value: "tc2" },
+  { icon: "platform1", label: { english: "Upper Platform 1", hindi: "ऊपरी प्लेटफ़ॉर्म 1", marathi: "वरचा प्लॅटफॉर्म 1", gujarati: "ઉપર પ્લેટફોર્મ 1" }, value: "up1" },
+  { icon: "platform2", label: { english: "Upper Platform 2", hindi: "ऊपरी प्लेटफ़ॉर्म 2", marathi: "वरचा प्लॅटफॉर्म 2", gujarati: "ઉપર પ્લેટફોર્મ 2" }, value: "up2" },
+  { icon: "platform3", label: { english: "Upper Platform 3", hindi: "ऊपरी प्लेटफ़ॉर्म 3", marathi: "वरचा प्लॅटफॉर्म 3", gujarati: "ઉપર પ્લેટફોર્મ 3" }, value: "up3" },
+  { icon: "platform4", label: { english: "Upper Platform 4", hindi: "ऊपरी प्लेटफ़ॉर्म 4", marathi: "वरचा प्लॅटफॉर्म 4", gujarati: "ઉપર પ્લેટફોર્મ 4" }, value: "up4" },
+
+  // Counters and Rooms
+  { icon: "ticket_counter", label: { english: "Ticket Counter E", hindi: "टिकट काउंटर E", marathi: "तिकीट काउंटर E", gujarati: "ટિકિટ કાઉન્ટર E" }, value: "tc1" },
+  { icon: "ticket_counter", label: { english: "Ticket Counter W", hindi: "टिकट काउंटर W", marathi: "तिकीट काउंटर W", gujarati: "ટિકિટ કાઉન્ટર W" }, value: "tc2" },
   { icon: "waiting_room", label: { english: "Waiting Room", hindi: "प्रतीक्षालय", marathi: "प्रतीक्षा कक्ष", gujarati: "પ્રતીક્ષા ખંડ" }, value: "wtrm" },
   { icon: "medical_room", label: { english: "Medical Room", hindi: "चिकित्सा कक्ष", marathi: "वैद्यकीय कक्ष", gujarati: "મેડિકલ રૂમ" }, value: "mdrm" },
+  { icon: "washroom", label: { english: "Washroom", hindi: "शौचालय", marathi: "स्वच्छतागृह", gujarati: "શૌચાલય" }, value: "wsrm" },
+  { icon: "kiosk_marker", label: { english: "Kiosk", hindi: "कियोस्क", marathi: "कियोस्क", gujarati: "કિયોસ્ક" }, value: "kiosk" },
+
+  // Transportation
+  { icon: "escalator", label: { english: "Escalator East Exit", hindi: "एस्केलेटर पूर्व निर्गम", marathi: "एस्केलेटर पूर्व निर्गम", gujarati: "એસ્કેલેટર પૂર્વ નિકાસ" }, value: "esc1" },
+  { icon: "escalator", label: { english: "Escalator Platform 1 U", hindi: "एस्केलेटर प्लेटफ़ॉर्म 1", marathi: "एस्केलेटर प्लॅटफॉर्म 1", gujarati: "એસ્કેલેટર પ્લેટફૉર્મ 1" }, value: "esc2" },
+  { icon: "escalator", label: { english: "Escalator Platform 1 L", hindi: "एस्केलेटर प्लेटफ़ॉर्म 1", marathi: "एस्केलेटर प्लॅटफॉर्म 1", gujarati: "એસ્કેલેટર પ્લેટફૉર્મ 1" }, value: "esc3" },
+  { icon: "escalator", label: { english: "Escalator Platform 4", hindi: "एस्केलेटर प्लेटफ़ॉर्म 4", marathi: "एस्केलेटर प्लॅटफॉर्म 4", gujarati: "એસ્કેલેટર પ્લેટફૉર્મ 4" }, value: "esc4" },
   { icon: "washroom", label: { english: "Washroom", hindi: "शौचाय", marathi: "स्वच्छतागृह", gujarati: "શૌચાલય" }, value: "wsrm" },
-  { icon: "escalator", label: { english: "Escalator", hindi: "एस्केलेटर", marathi: "एस्केलेटर", gujarati: "એસ્કેલેટર" }, value: "esc2" },
+  { icon: "escalator", label: { english: "Escalator Platform 4", hindi: "एस्केलेटर प्लेटफ़ॉर्म 4", marathi: "एस्केलेटर प्लॅटफॉर्म 4", gujarati: "એસ્કેલેટર પ્લેટફૉર્મ 4" }, value: "esc4" },
   { icon: "elevator", label: { english: "Elevator", hindi: "लिफ्ट", marathi: "लिफ्ट", gujarati: "લિફ્ટ" }, value: "elv" },
   { icon: "elevator", label: { english: "Parking Elevator", hindi: "पार्किंग लिफ्ट", marathi: "पार्किंग लिफ्ट", gujarati: "પાર્કિંગ લિફ્ટ" }, value: "ep" },
   { icon: "food_court", label: { english: "Food Court", hindi: "फूड कोर्ट", marathi: "फूड कोर्ट", gujarati: "ફૂડ કોર્ટ" }, value: "fd_ct" },
@@ -1056,12 +1071,30 @@ const StationNavigation: React.FC<StationNavigationProps> = ({ initialData, sele
       // Update announcement message
       const fromName = nodeFriendlyNames[from];
       const toName = nodeFriendlyNames[to];
-      const message = `You have selected route from ${fromName} to ${toName}`;
+      let message = '';
+
+      switch (language) {
+        case 'hindi':
+          message = `आपने ${fromName} से ${toName} तक का मार्ग चुना है`;
+          break;
+        case 'marathi':
+          message = `आपण ${fromName} पासून ${toName} पर्यंतचा मार्ग निवडला आहे`;
+          break;
+        case 'gujarati':
+          message = `તમે ${fromName} થી ${toName} સુધીનો માર્ગ પસંદ કર્યો છે`;
+          break;
+        default:
+          message = `You have selected route from ${fromName} to ${toName}`;
+      }
+
       setAnnouncement(message);
       setIsDialogOpen(true);
+      speakGuidance(message);
     } else {
       console.error(`Unable to find path from ${from} to ${to}`);
     }
+
+    
   };
 
   const handleSvgClick = (e: React.MouseEvent<SVGSVGElement>) => {
@@ -1238,13 +1271,26 @@ const StationNavigation: React.FC<StationNavigationProps> = ({ initialData, sele
     return directions[newIndex];
   }
 
-  const speakGuidance = (text: string) => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.9; // Adjust the speaking rate if needed
-    window.speechSynthesis.cancel(); // Cancel any ongoing speech
-    window.speechSynthesis.speak(utterance);
+  const speakGuidance = async (text: string) => {
+    try {
+      const response = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, language }),
+      });
+  
+      if (!response.ok) throw new Error('Failed to fetch TTS audio');
+  
+      const blob = await response.blob();
+      const audioUrl = URL.createObjectURL(blob);
+      const audio = new Audio(audioUrl);
+      audio.play();
+    } catch (error) {
+      console.error('TTS error:', error);
+    }
   };
+  
+  
 
   // Function to start voice input
   const startVoiceInput = () => {

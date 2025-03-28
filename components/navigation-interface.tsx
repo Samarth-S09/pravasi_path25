@@ -471,6 +471,125 @@ interface NodeManagementDialogProps {
   onSaveChanges: (nodes: Record<string, boolean>) => void;
 }
 
+// Add this new interface for the location selector
+interface LocationSelectorProps {
+  onFromSelect: (value: string) => void;
+  onToSelect: (value: string) => void;
+  selectedFrom: string;
+  selectedTo: string;
+  language: string;
+}
+
+const LocationSelector: React.FC<LocationSelectorProps> = ({
+  onFromSelect,
+  onToSelect,
+  selectedFrom,
+  selectedTo,
+  language
+}) => {
+  const [isSelectingFrom, setIsSelectingFrom] = useState(true);
+
+  const handleLocationSelect = (value: string) => {
+    if (isSelectingFrom) {
+      onFromSelect(value);
+      setIsSelectingFrom(false);
+    } else {
+      onToSelect(value);
+    }
+  };
+
+  const handleSwapLocations = () => {
+    if (selectedFrom && selectedTo) {
+      onFromSelect(selectedTo);
+      onToSelect(selectedFrom);
+    }
+  };
+
+  const handleRestart = () => {
+    onFromSelect("");
+    onToSelect("");
+    setIsSelectingFrom(true);
+  };
+
+  return (
+    <div className="flex flex-col gap-2 bg-white rounded-lg p-2 h-full">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold">Route Selection</h2>
+        <div className="flex gap-1">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleSwapLocations}
+            disabled={!selectedFrom || !selectedTo}
+          >
+            Swap
+          </Button>
+          <Button variant="outline" size="sm" onClick={handleRestart}>
+            Reset
+          </Button>
+        </div>
+      </div>
+      
+      <div className="flex gap-2 bg-orange-50 p-2 rounded-lg">
+        <div className="flex-1">
+          <div className="bg-orange-500 text-white font-bold px-2 py-1 rounded-md text-center">From:</div>
+          <div className="bg-white p-1 rounded-md text-sm">
+            {selectedFrom ? nodeFriendlyNames[selectedFrom] : "Select starting point"}
+          </div>
+        </div>
+        <div className="flex-1">
+          <div className="bg-orange-500 text-white font-bold px-2 py-1 rounded-md text-center">To:</div>
+          <div className="bg-white p-1 rounded-md text-sm">
+            {selectedTo ? nodeFriendlyNames[selectedTo] : "Select destination"}
+          </div>
+        </div>
+      </div>
+      
+      <div className="flex">
+        <Button
+          variant={isSelectingFrom ? "default" : "outline"}
+          className="flex-1 rounded-r-none"
+          onClick={() => setIsSelectingFrom(true)}
+        >
+          Select From
+        </Button>
+        <Button
+          variant={!isSelectingFrom ? "default" : "outline"}
+          className="flex-1 rounded-l-none"
+          onClick={() => setIsSelectingFrom(false)}
+        >
+          Select To
+        </Button>
+      </div>
+
+      <ScrollArea className="flex-1 pr-2 custom-scrollbar">
+        <div className="space-y-1 pr-2">
+          {menuItems.map(({ icon, label, value }) => {
+            const isDisabled = (isSelectingFrom && value === selectedTo) || 
+                            (!isSelectingFrom && value === selectedFrom);
+            
+            const isSelected = (isSelectingFrom && value === selectedFrom) ||
+                             (!isSelectingFrom && value === selectedTo);
+            
+            return (
+              <Button
+                key={value}
+                variant={isSelected ? "default" : "ghost"}
+                className="w-full justify-start h-[50px] text-sm bg-zinc-800 hover:bg-zinc-700 text-white"
+                onClick={() => handleLocationSelect(value)}
+                disabled={isDisabled}
+              >
+                <IconWrapper><SvgIcon name={icon} /></IconWrapper>
+                <span className="ml-2">{label[language as keyof typeof label]}</span>
+              </Button>
+            );
+          })}
+        </div>
+      </ScrollArea>
+    </div>
+  );
+};
+
 const StationNavigation: React.FC<StationNavigationProps> = ({ initialData, selectedLanguage }) => {
   const activeNodes = initialData?.nodes || nodeFriendlyNames;
   const activeGraph = initialData?.graph || stationGraph;
@@ -503,6 +622,8 @@ const StationNavigation: React.FC<StationNavigationProps> = ({ initialData, sele
       return acc;
     }, {} as Record<string, boolean>);
   });
+  const [selectedFrom, setSelectedFrom] = useState("");
+  const [selectedTo, setSelectedTo] = useState("");
 
   useEffect(() => {
     const setVoices = () => {
@@ -548,52 +669,6 @@ const StationNavigation: React.FC<StationNavigationProps> = ({ initialData, sele
       updateSvg();
     }
   }, []);
-
-  const handleQuickSearchClick = async (option: { english: string, hindi: string, marathi: string, gujarati: string }) => {
-    const translatedOption = option[language as keyof typeof option];
-    const message = `${translations[language].selectedDestination} "${translatedOption}".`
-    setAnnouncement(message);
-    setIsDialogOpen(true);
-
-    // Prepare the full message for TTS
-    const fullMessage = message;
-
-    // Call the TTS API via the API route
-    try {
-        const response = await fetch('/api/tts', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ text: fullMessage, language }),
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to synthesize speech');
-        }
-
-        // Handle the audio content if needed
-        const audioBlob = await response.blob();
-        const audioUrl = URL.createObjectURL(audioBlob);
-        const audio = new Audio(audioUrl);
-        audio.play();
-
-    } catch (error) {
-        console.error('Error calling TTS API:', error);
-    }
-
-    handleDestinationClick(menuItems.find(item => item.label.english === option.english)?.value || "");
-  }
-
-  useEffect(() => {
-    if (isDialogOpen) {
-        const timer = setTimeout(() => {
-            setIsDialogOpen(false);
-        }, 5000); // Close dialog after 6 seconds
-
-        return () => clearTimeout(timer); // Cleanup timer on unmount
-    }
-  }, [isDialogOpen]);
 
   const handleLanguageChange = (newLang: string) => {
     setLanguage(newLang);
@@ -974,15 +1049,20 @@ const StationNavigation: React.FC<StationNavigationProps> = ({ initialData, sele
     updateSvg();
   }, [path, svgSize, zoom, panPosition]);
 
-  const handleDestinationClick = (value: string) => {
-    setSelectedDestination(value)
-    const calculatedPath = findShortestPath("kiosk", value)
+  const handleDestinationClick = (from: string, to: string) => {
+    const calculatedPath = findShortestPath(from, to);
     if (calculatedPath.length > 0) {
-      setPath(calculatedPath)
+      setPath(calculatedPath);
+      // Update announcement message
+      const fromName = nodeFriendlyNames[from];
+      const toName = nodeFriendlyNames[to];
+      const message = `You have selected route from ${fromName} to ${toName}`;
+      setAnnouncement(message);
+      setIsDialogOpen(true);
     } else {
-      console.error(`Unable to find path from kiosk to ${value}`)
+      console.error(`Unable to find path from ${from} to ${to}`);
     }
-  }
+  };
 
   const handleSvgClick = (e: React.MouseEvent<SVGSVGElement>) => {
     const svg = svgRef.current;
@@ -1012,7 +1092,7 @@ const StationNavigation: React.FC<StationNavigationProps> = ({ initialData, sele
     }); // Ensure this closing parenthesis and bracket are present
 
     if (closestNode) {
-      handleDestinationClick(closestNode);
+      handleDestinationClick(closestNode, selectedTo);
     }
   };
 
@@ -1495,6 +1575,21 @@ const StationNavigation: React.FC<StationNavigationProps> = ({ initialData, sele
     localStorage.setItem('activeNodes', JSON.stringify(nodes));
   };
 
+  // Update the handleFromSelect and handleToSelect functions
+  const handleFromSelect = (value: string) => {
+    setSelectedFrom(value);
+    if (selectedTo) {
+      handleDestinationClick(value, selectedTo);
+    }
+  };
+
+  const handleToSelect = (value: string) => {
+    setSelectedTo(value);
+    if (selectedFrom) {
+      handleDestinationClick(selectedFrom, value);
+    }
+  };
+
   return (
     <div className="flex h-screen w-screen bg-[#FF6B00] overflow-hidden" style={{ maxWidth: '1920px', maxHeight: '1080px', margin: '0 auto' }}>
       {/* Left Sidebar */}
@@ -1504,27 +1599,14 @@ const StationNavigation: React.FC<StationNavigationProps> = ({ initialData, sele
           <img src="/pravasipath_logo.svg" alt="PravasiPath Logo" className="h-20" />
         </div>
 
-        {/* Quick Search Section */}
-        <div className="flex flex-col gap-4 overflow-hidden flex-grow bg-white rounded-lg p-4">
-          <h2 className="bg-zinc-800 text-white p-4 rounded-lg text-xl flex-shrink-0 text-center">
-            <Translate>{translations[language].quickSearch}</Translate>
-          </h2>
-          <ScrollArea className="h-[calc(100vh-200px)] pr-2 custom-scrollbar">
-            <div className="space-y-2 pr-2">
-              {menuItems.map(({ icon, label, value }) => (
-                <Button
-                  key={value}
-                  variant={selectedDestination === value ? "default" : "ghost"}
-                  className="w-full justify-start h-[60px] text-base bg-zinc-800 hover:bg-zinc-700 text-white"
-                  onClick={() => handleQuickSearchClick(label)}
-                >
-                  <IconWrapper><SvgIcon name={icon} /></IconWrapper>
-                  <span className="ml-3">{label[language as keyof typeof label]}</span>
-                </Button>
-              ))}
-            </div>
-          </ScrollArea>
-        </div>
+        {/* Location Selector */}
+        <LocationSelector
+          onFromSelect={handleFromSelect}
+          onToSelect={handleToSelect}
+          selectedFrom={selectedFrom}
+          selectedTo={selectedTo}
+          language={language}
+        />
       </div>
 
       {/* Main Content */}
@@ -1653,6 +1735,16 @@ const StationNavigation: React.FC<StationNavigationProps> = ({ initialData, sele
                 <SvgIcon name="voice_guide" />
               </IconWrapper>
             </Button>
+            <Button
+              variant="secondary"
+              className="bg-zinc-800 text-white p-2 h-[65px] w-[65px]"
+              onClick={() => setIsAdminDialogOpen(true)}
+            >
+              <IconWrapper>
+                <SvgIcon name="station_master" />
+              </IconWrapper>
+            </Button>
+
           </div>
         </div>
       </div>

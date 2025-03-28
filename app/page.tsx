@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import AdminAuth from "@/components/admin-auth";
 import StationNavigation from "@/components/navigation-interface";
 import SplashScreen from "@/components/splashscreen";
 import WelcomeScreen from "@/components/welcome-screen";
@@ -43,19 +42,7 @@ const HomePage = () => {
 
   return (
     <div>
-      <Button className="fixed top-4 right-4 z-50" onClick={() => setShowAdmin(true)}>
-        Admin Access
-      </Button>
-
-      {showAdmin && (
-        <AdminAuth
-          nodes={nodeFriendlyNames}
-          onLogin={handleAdminSubmit}
-          onCancel={() => setShowAdmin(false)}
-        />
-      )}
-
-    <StationNavigation initialData={navigationData} selectedLanguage={language} />
+         <StationNavigation initialData={navigationData} selectedLanguage={language} />
     </div>
   );
 };
